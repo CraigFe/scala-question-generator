@@ -1,0 +1,9 @@
+body {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.pageheader {
+  padding: 2rem!important;
+  text-align: center;
+}
