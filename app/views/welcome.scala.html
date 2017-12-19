@@ -1,4 +1,4 @@
-@(message: String, style: String = "scala") 
+@(message: String)
 
 @defining(play.core.PlayVersion.current) { version =>
 
@@ -9,26 +9,30 @@
         <p class="lead">A REST API for supplying addition questions.</p>
     </div>
 
+    <p>This project is a basic REST API, written in Scala using the Play framework (v@version).
+        The questions are served from the <a href="./question">/question</a> path, which takes query parameters
+        <code>lower</code> and <code>upper</code>, specifying the lower and upper bounds of the answer (inclusive)
+        respectively. If no parameters are specified, the answer defaults to be within the range [0, 1e6].</p>
 
     <br>
 
-    <p>
-      This project is a basic REST API, written in Scala using the Play framework (@version).
-    </p>
-
+    <h3>Generation Logic</h3>
+    <p> The main logic for generating the API is as follows:</p>
     <pre><code>
-        Something interesting in here?
-        what?
+    override def generateQuestion(lower: Int, upper: Int): Question = {
+        val random = scala.util.Random
+
+        // First generate the correct answer
+        val ans = random.nextInt(upper - lower + 1) + lower
+
+        val addend = random.nextInt(ans - 1) + 1 // addend in range [1, ans)
+        val augend = ans - addend
+
+        new Question(addend + " + " + augend + "?", (ans, 0, 0, 0))
+    }
     </code></pre>
 
-    <h3>Question Generator</h3>
-    <p> The code generation logic can be found here</p>
-
     <h3>Examples</h3>
-
-
-    <h3>Interactive REST API caller</h3>
-
 
 </div>
 }
