@@ -7,3 +7,29 @@ body {
   padding: 2rem!important;
   text-align: center;
 }
+
+.left-panel {
+  flex-grow: 1;
+  display: flex;
+  justify-content:center;
+  align-content:center;
+  flex-direction:column;
+}
+
+.right-panel {
+  width: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content:center;
+  align-content:center;
+  flex-direction:column;
+}
+
+.example-body {
+  display: flex;
+}
+
+.example-code {
+  margin-bottom: 0;
+  display: inline-block;
+}

@@ -6,33 +6,122 @@
 
     <div class="jumbotron pageheader">
         <h1 class="display-4">@message</h1>
-        <p class="lead">A REST API for supplying addition questions.</p>
+        <p class="lead">A Scala REST API for generating addition questions.</p>
     </div>
 
     <p>This project is a basic REST API, written in Scala using the Play framework (v@version).
-        The questions are served from the <a href="./question">/question</a> path, which takes query parameters
+        The questions are served from the <a href="./question">/question</a> URI. The API takes query parameters
         <code>lower</code> and <code>upper</code>, specifying the lower and upper bounds of the answer (inclusive)
         respectively. If no parameters are specified, the answer defaults to be within the range [0, 1e6].</p>
 
+    <p>The JSON response served by the API contains a question of the form <code>"a + b?"</code> and a list of four unique integers,
+        exactly one of which is the correct answer. The correct answer has been left indistinguishable from the
+        incorrect answers in order to make it impossible to get the correct answer by simply inspecting the GET response.</p>
     <br>
 
-    <h3>Generation Logic</h3>
-    <p> The main logic for generating the API is as follows:</p>
-    <pre><code>
-    override def generateQuestion(lower: Int, upper: Int): Question = {
-        val random = scala.util.Random
-
-        // First generate the correct answer
-        val ans = random.nextInt(upper - lower + 1) + lower
-
-        val addend = random.nextInt(ans - 1) + 1 // addend in range [1, ans)
-        val augend = ans - addend
-
-        new Question(addend + " + " + augend + "?", (ans, 0, 0, 0))
-    }
-    </code></pre>
-
     <h3>Examples</h3>
+    <p>The following examples demonstrate the functionality of the API:</p>
+
+    <div class="card">
+        <div class="card-body example-body">
+            <div class="left-panel">
+                <h5 class="card-title"><a href="./question">/question</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Behaviour <i>without</i> query parameters</h6>
+            </div>
+
+            <div class="right-panel">
+                <pre class="example-code"><code>{
+    "question" : "396443 + 287976?",
+    "answers" : [ 684019, 684419, 684439, 784019 ]
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card">
+        <div class="card-body example-body">
+            <div class="left-panel">
+                <h5 class="card-title"><a href="./question?lower=200&upper=300">/question?lower=200&upper=300</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Behaviour <i>with</i> query parameters</h6>
+            </div>
+
+            <div class="right-panel">
+                <pre class="example-code"><code>{
+    "question" : "143 + 120?",
+    "answers" : [ 363, 263, 359, 262 ]
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card">
+        <div class="card-body example-body">
+            <div class="left-panel">
+                <h5 class="card-title"><a href="./question?lower=0&upper=0">/question?lower=0&upper=0</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Lower limit of query parameters</h6>
+            </div>
+
+            <div class="right-panel">
+                <pre class="example-code"><code>{
+    "question" : "0 + 0?",
+    "answers" : [ 0, 4, 6, 3 ]
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card">
+        <div class="card-body example-body">
+            <div class="left-panel">
+                <h5 class="card-title"><a href="./question?lower=1000000&upper=1000000">/question?lower=1000000&upper=1000000</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Upper limit of query parameters</h6>
+            </div>
+
+            <div class="right-panel">
+                <pre class="example-code"><code>{
+    "question" : "517026 + 482974?",
+    "answers" : [ 799996, 800000, 1000000, 820000 ]
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card">
+        <div class="card-body example-body">
+            <div class="left-panel">
+                <h5 class="card-title"><a href="./question?lower=-1">/question?lower=-1</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Query parameters out of range</h6>
+            </div>
+
+            <div class="right-panel">
+                <pre class="example-code"><code>ERROR: Lower bound may not be less than 0.</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card">
+        <div class="card-body example-body">
+            <div class="left-panel">
+                <h5 class="card-title"><a href="./question?lower=5&upper=3">/question?lower=5&upper=3</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Invalid query parameters</h6>
+            </div>
+
+            <div class="right-panel">
+                <pre class="example-code"><code>ERROR: Lower bound may not be greater than the upper bound.</code></pre>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 }
