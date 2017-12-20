@@ -68,8 +68,11 @@ class AdditionQuestion extends QuestionGenerator {
       val (addend, augend) = list(Random.nextInt(list.length))
       val newQuestion: (Int, Int) = if (Random.nextInt(2) == 0) (mutateDigit(addend), augend) else (addend, mutateDigit(augend))
 
-      // Check for duplicate questions
-      if (list.map{ case (a, b) => bounded(a + b) }.contains(bounded(newQuestion._1 + newQuestion._2)))
+      /* Check that the question is not a duplicate, or has an out-of-bound addend
+          or augend (helps reduce occurences of bounds as answers) */
+      if (list.map{ case (a, b) => bounded(a + b) }.contains(bounded(newQuestion._1 + newQuestion._2))
+            || isOutOfBounds(newQuestion._1) || isOutOfBounds(newQuestion._2))
+
         variantQuestions(list, toGenerate) // Try again
 
       else
@@ -79,9 +82,16 @@ class AdditionQuestion extends QuestionGenerator {
   }
 
   /**
-    * Utility function to bound an integer withint the lower and upper bounds for the question answer.
+    * Utility function to bound an integer within the lower and upper bounds for the answer.
     */
-  def bounded (x: Int) = math.min(math.max(x, lowerBound), upperBound)
+  private def bounded(x: Int) = math.min(math.max(x, lowerBound), upperBound)
+
+  /**
+    * Function to check if an integer is within the lower and upper bounds for the answer.
+    * @param x
+    * @return
+    */
+  private def isOutOfBounds(x: Int) = x < lowerBound || x > upperBound
 
   /**
     * Utility function to mutate a random digit in a given integer by adding a random delta value.
